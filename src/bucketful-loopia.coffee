@@ -27,7 +27,14 @@ exports.create = (username, password) ->
     fulldomain = bucket
     client = loopiaClient
 
-    {domain, subdomain} = domainToParts(fulldomain)
+    domainParts = domainToParts(fulldomain)
+
+    if !domainParts?
+      console.log "Warning: #{fulldomain} could not parsed as a domain name"
+      callback()
+      return
+
+    {domain, subdomain} = domainParts
 
     Q.nfcall(client.getSubdomains, domain)
     .then (subdomains) ->
